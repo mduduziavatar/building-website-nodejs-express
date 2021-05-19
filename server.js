@@ -2,6 +2,7 @@ let express = require('express');
 let path = require('path');
 let cookieSession = require('cookie-session');
 let createError = require('http-errors');
+let bodyParser = require('body-parser');
 
 let FeedbackService = require('./services/FeedbackService');
 let SpeakerService = require('./services/SpeakerService');
@@ -23,6 +24,8 @@ app.use(
     keys: ['Randomly', 'Created'],
   })
 );
+
+app.use(bodyParser.urlencoded({ extended:true}));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, './views'));
@@ -52,6 +55,16 @@ app.use(
 app.use(function (request, response, next) {
   return next(createError(404, 'File not found'));
 });
+
+//this becomes middleware for errors just because it take four arguments 
+app.use(function (err, request, response, next){
+response.locals.message = err.message;
+console.error(err);
+let status = err.status || 500;
+response.locals.status = status;
+response.status(status);
+response.render('error')
+})
 
 let port = 3000;
 app.listen(port, function () {
