@@ -11,15 +11,17 @@ module.exports = function (params) {
     try {
       let feedback = await feedbackService.getList();
 
-
       let errors = request.session.feedback ? request.session.feedback.errors : false;
-      request.session.feedback = {};//request the session object
-
+      
+      let successMessage = request.session.feedback ? request.session.feedback.message : false;
+      
+      request.session.feedback = {}; //request the session object
       return response.render('layout', {
         pageTitle: 'Feedback',
         template: 'feedback',
         feedback,
-        errors
+        errors,
+        successMessage
       });
     } catch (err) {
       return next(err);
@@ -31,7 +33,7 @@ module.exports = function (params) {
     [
       check('name') //check the name
         .trim() //remove empty characters
-        .isLength({ min: 30 }) //ensure the length is at least 3 characters long
+        .isLength({ min: 3 }) //ensure the length is at least 3 characters long
         .escape() //no html and js embedded in this entry
         .withMessage('A name is required'),
       check('email') //check the name
@@ -47,19 +49,25 @@ module.exports = function (params) {
         .withMessage('A title is required'),
       check('message') //check the name
         .trim() //remove empty characters
-        .isLength({ min: 15 }) //ensure the length is at least 15 characters long
+        .isLength({ min: 10 }) //ensure the length is at least 15 characters long
         .escape() //no html and js embedded in this entry
         .withMessage('A message is required'),
     ],
-    function (request, response) {
+    async function (request, response) {
       let errors = validationResult(request);
 
       if (!errors.isEmpty()) {
         request.session.feedback = { errors: errors.array() };
-        return response.redirect('feedback');
+        return response.redirect('/feedback');
       }
       //console.log(request.body);
-      return response.send('Feedback form posted');
+      let { name, email, title, message } = request.body;
+
+      await feedbackService.addEntry(name, email, title, message);
+      request.session.feedback = {
+        message: "Thank you for your message!"
+      }
+      return response.redirect('/feedback');
     }
   );
 
