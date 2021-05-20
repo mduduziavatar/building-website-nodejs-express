@@ -19,16 +19,27 @@
       rel="stylesheet"
     />
 
+    <!-- Google Tag Manager -->
+
+    <!-- End Google Tag Manager -->
   </head>
 
   <body>
     <header>
+      <!-- Google Tag Manager (noscript) -->
+      <noscript
+        ><iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-TW4RKC5"
+          height="0"
+          width="0"
+          style="display: none; visibility: hidden"
+        ></iframe
+      ></noscript>
+      <!-- End Google Tag Manager (noscript) -->
       <div class="jumbotron d-none d-sm-block"></div>
       <%- include('./partials/navigation') %>
     </header>
 
-    <%- include(`../pages/${template}`)%>
-    <%- include('./partials/scripts') %>
-
+    <%- include(`../pages/${template}`)%> <%- include('./partials/scripts') %>
   </body>
 </html>

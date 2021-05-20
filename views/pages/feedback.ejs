@@ -77,10 +77,19 @@
             <div class="feedback-item media">
               <div class="feedback-info media-body">
                 <div class="feedback-head">
-                  <div class="feedback-title"><%=item.title%></div>
-                  <small>by <%=item.name%></small>
+                  <div class="feedback-title" id="title" onclick="dataLayer.push({
+                    'event': 'title',
+                    'titleID': '<%=item.title%>'
+                })"><%=item.title%></div>
+                  <small id="name" onclick="dataLayer.push({
+                    'event': 'name',
+                    'nameID': '<%=item.name%>'
+                })">by <%=item.name%></small>
                 </div>
-                <div class="feedback-message"><%=item.message%></div>
+                <div class="feedback-message" id="mesaage" onclick="dataLayer.push({
+                  'event': 'message',
+                  'messageID': '<%=item.message%>'
+              })"><%=item.message%></div>
               </div>
             </div>
           </div>
